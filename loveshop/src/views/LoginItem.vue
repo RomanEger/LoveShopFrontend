@@ -1,28 +1,13 @@
 <script setup lang="ts">
-import { reactive,ref } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { UserLoginDto } from '@/dtos/userLogin'
 
 const router = useRouter()
 const email = ref('')
 const password = ref('')
-const errors = reactive({
-  form: ''
-})
 
 const handleLogin = () => {
-  const user = UserLoginDto.create(
-    email.value,
-    password.value,
-    password.value
-  );
-  if (!user.isSuccess) {
-    errors.form = "Email или пароль введены неверно";
-    return;
-  }
-  else {
-    errors.form = "";
-  }
   console.log('Login:', { email: email.value, password: password.value })
 }
 
@@ -37,10 +22,10 @@ const goBack = () => {
       <h2 class="text-2xl font-bold text-gray-800 mb-6">Вход</h2>
       <form @submit.prevent="handleLogin" class="space-y-4">
          <span
-              v-if="errors.form"
+              v-if="form"
               class="text-red-500 text-sm block"
             >
-             {{ errors.form }}
+             {{form}}
           </span>
         <div>
           <label for="email" class="block text-gray-700 font-bold mb-2">Email</label>

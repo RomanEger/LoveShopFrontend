@@ -12,14 +12,6 @@ export class UserLoginDto {
 
   static create(email: string, password: string, confirmPassword?: string): Result<UserLoginDto> {
     const errors: Error[] = [];
-    if (!email || email.trim() === '') {
-      errors.push(new EmailError('Email не может быть пустым'))
-    } else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-      errors.push(new EmailError('Некорректный email'));
-    }
-    if (!password || password.trim() === '') {
-      errors.push(new PasswordError('Пароль не может быть пустым'));
-    } 
     if (confirmPassword && password !== confirmPassword) {
       errors.push(new PasswordError('Пароли не совпадают'));
     }
