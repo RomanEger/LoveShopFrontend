@@ -11,7 +11,7 @@ export function useLoginForm() {
   const submit = async () => {
     try {
       await login(email.value, password.value);
-      router.push('/dashboard'); // или куда нужно после логина
+      // router.push('/product'); // будущая страница
     } catch (e) {
       error.value = 'Ошибка логина. Проверьте email и пароль.';
       console.error(e);
