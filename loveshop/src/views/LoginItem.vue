@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { UserLoginDto } from '@/dtos/userLogin'
+import { UserLoginDto } from '@/shared/dtos/userLogin'
 
 const router = useRouter()
 const email = ref('')
