@@ -1,5 +1,5 @@
-import Result from '../utils/Result';
-
+import Result from '../lib/Result';
+import { PasswordError } from '../Errors/PasswordError';
 export class UserLoginDto {
   email: string;
   password: string;
@@ -22,16 +22,6 @@ export class UserLoginDto {
   }
 }
 
-export class EmailError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'EmailError';
-  }
-}
 
-export class PasswordError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'PasswordError';
-  }
-}
+
+
