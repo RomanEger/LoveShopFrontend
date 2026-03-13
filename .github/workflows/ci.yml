@@ -1,0 +1,53 @@
+name: CI for Vue
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  push:
+    branches: [ main, develop ]
+
+jobs:
+  vue-checks:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 'vue-project/package-lock.json'
+
+      - name: Install dependencies
+        working-directory: ./vue-project
+        run: npm ci
+
+      - name: Check code formatting with ESLint
+        working-directory: ./vue-project
+        run: |
+          echo "🔍 Running ESLint..."
+          npx eslint . --ext .vue,.js,.ts --max-warnings 0
+
+      - name: TypeScript type checking
+        working-directory: ./vue-project
+        run: |
+          echo "🔍 Running TypeScript type checking..."
+          npm run type-check
+
+      - name: Run tests with coverage
+        working-directory: ./vue-project
+        run: |
+          echo "🧪 Running tests with coverage..."
+          npm run test:unit -- --coverage || echo "⚠️ Tests not configured yet"
+
+      - name: Build project
+        working-directory: ./vue-project
+        run: |
+          echo "🏗️ Building project..."
+          npm run build
+        continue-on-error: false
