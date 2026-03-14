@@ -1,0 +1,38 @@
+name: PR Lifecycle Notifications
+
+on:
+  pull_request:
+    types: [opened, reopened, closed]
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Telegram notification
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message_thread_id: ${{ secrets.TELEGRAM_THREAD_TOPIC }} 
+          message: |
+            ${{ 
+              github.event_name == 'pull_request' && github.event.action == 'opened' && '🆕 **НОВЫЙ PR**' ||
+              github.event_name == 'pull_request' && github.event.action == 'reopened' && '🔄 **PR ВОЗОБНОВЛЕН**' ||
+              github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true && '🎉 **PR СМЕРЖЕН**' ||
+              github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == false && '❌ **PR ЗАКРЫТ**' ||
+              github.event_name == 'pull_request_review' && github.event.review.state == 'approved' && '✅ **PR ОДОБРЕН**' ||
+              github.event_name == 'pull_request_review' && github.event.review.state == 'changes_requested' && '🔄 **ЗАПРОШЕНЫ ИЗМЕНЕНИЯ**' ||
+              github.event_name == 'pull_request_review' && '💬 **НОВЫЙ КОММЕНТАРИЙ**'
+            }}
+            
+            📦 **Репозиторий:** ${{ github.repository }}
+            📌 **Название:** ${{ github.event.pull_request.title }}
+            👤 **Автор:** @${{ github.event.pull_request.user.login }}
+            🌿 **Ветка:** ${{ github.event.pull_request.head.ref }} → ${{ github.event.pull_request.base.ref }}
+            
+            ${{ github.event.review && format('👥 **Ревьювер:** @{0}', github.event.review.user.login) || '' }}
+            ${{ github.event.review && github.event.review.body != '' && format('📝 **Комментарий:** {0}', github.event.review.body) || '' }}
+            
+            🔗 ${{ github.event.pull_request.html_url }}
